@@ -1,9 +1,15 @@
-
+#include <OneWire.h>
+#include <DallasTemperature.h>
 #include <Blynk.h>
+#include <BlynkSimpleEsp8266.h>
 #include "DHT.h"        // DHT11 temperature and humidity sensor Predefined library
+
+#define ONE_WIRE_BUS 2
+
 #define DHTTYPE DHT11   // DHT 11
 #define dht_dpin D6      //GPIO-0 D3 pin of nodemcu
-#include <BlynkSimpleEsp8266.h>
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
 
 char auth[] = "jk3Dnpr7Y4cVX73g-mpCspUhEZJGEbUK";    // You should get Auth Token in the Blynk App.
 char ssid[] = "SHA-256";                           // Your WiFi credentials.
@@ -27,6 +33,7 @@ DHT dht(dht_dpin, DHTTYPE);
 void setup(void)
 {
   Serial.begin(115200);
+  sensors.begin();
   pinMode(S0, OUTPUT);
   pinMode(S1, OUTPUT);
   pinMode(S2, OUTPUT);
@@ -42,6 +49,7 @@ void setup(void)
 }
 
 void loop() {
+  sensors.requestTemperatures();
   //digitalWrite(ON_OFF, HIGH);
   float h = 0.0; //Humidity level
   float t = 0.0; //Temperature in celcius
@@ -148,7 +156,8 @@ void loop() {
   Blynk.virtualWrite(V2, sensorValue3);
   Blynk.virtualWrite(V3, t);
   Blynk.virtualWrite(V4, h);
-
+  Blynk.virtualWrite(V5, sensors.getTempCByIndex(0));
+  Blynk.virtualWrite(V6, sensors.getTempCByIndex(1));
   delay(1000);
 
 
