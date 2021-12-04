@@ -133,11 +133,11 @@ void loop() {
 
 
   //Serial.println(VBR);
-  Serial.println("humidity" + String(h));
-  Serial.println("temp" + String(t));
-  Serial.println("Soil 1" + String(sensorValue1));
-  Serial.println("Soil 2" + String(sensorValue2));
-  Serial.println("LDR" + String(sensorValue3));
+  Serial.println("humidity: " + String(h));
+  Serial.println("temp: " + String(t));
+  Serial.println("Soil 1: " + String(sensorValue1));
+  Serial.println("Soil 2: " + String(sensorValue2));
+  Serial.println("LDR: " + String(map(sensorValue3, 0, 1023, 10, 0)));
 
   delay(10);
   // int j;
@@ -153,7 +153,7 @@ void loop() {
   Blynk.run(); // Initiates Blynk
   Blynk.virtualWrite(V0, sensorValue1);
   Blynk.virtualWrite(V1, sensorValue2);
-  Blynk.virtualWrite(V2, sensorValue3);
+  Blynk.virtualWrite(V2, map(sensorValue3, 0, 1023, 10, 0));
   Blynk.virtualWrite(V3, t);
   Blynk.virtualWrite(V4, h);
   Blynk.virtualWrite(V5, sensors.getTempCByIndex(0));
