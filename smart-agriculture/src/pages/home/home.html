@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Smart Agriculture Data Analysis</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+        <ion-col>
+            <rg-gauge-chart
+                [canvasWidth]="canvasWidth"
+                [needleValue]="soil1"
+                [centralLabel]="centralLabel"
+                [options]="options"
+                [name]="'Soil 1'"
+                [bottomLabel]="bottomSoil1"></rg-gauge-chart>
+        </ion-col>
+        <ion-col>
+          <rg-gauge-chart
+              [canvasWidth]="canvasWidth"
+              [needleValue]="soil2"
+              [centralLabel]="centralLabel"
+              [options]="options"
+              [name]="'Soil 2'"
+              [bottomLabel]="bottomSoil2"></rg-gauge-chart>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+          <rg-gauge-chart
+              [canvasWidth]="canvasWidth"
+              [needleValue]="soilTemp1"
+              [centralLabel]="centralLabel"
+              [options]="options"
+              [name]="'Soil Temp 1'"
+              [bottomLabel]="bottomSoilTemp1"></rg-gauge-chart>
+      </ion-col>
+      <ion-col>
+        <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [needleValue]="soilTemp2"
+            [centralLabel]="centralLabel"
+            [options]="options"
+            [name]="'Soil Temp 2'"
+            [bottomLabel]="bottomSoilTemp2"></rg-gauge-chart>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+        <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [needleValue]="light"
+            [centralLabel]="centralLabel"
+            [options]="options"
+            [name]="'Light'"
+            [bottomLabel]="bottomLight"></rg-gauge-chart>
+    </ion-col>
+    <ion-col>
+      <rg-gauge-chart
+          [canvasWidth]="canvasWidth"
+          [needleValue]="temperature"
+          [centralLabel]="centralLabel"
+          [options]="options"
+          [name]="'Temperature'"
+          [bottomLabel]="bottomTemp"></rg-gauge-chart>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col>
+    <rg-gauge-chart
+          [canvasWidth]="canvasWidth"
+          [needleValue]="humidity"
+          [centralLabel]="centralLabel"
+          [options]="options"
+          [name]="'Humidity'"
+          [bottomLabel]="bottomHumd"></rg-gauge-chart>
+  </ion-col>
+</ion-row>
+</ion-grid>
+<ion-grid>
+  <ion-row>
+      <ion-col>
+          <canvas baseChart width="300" height="400"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [colors]="lineChartColors"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+      </ion-col>
+  </ion-row>
+  <ion-row>
+      <ion-col>
+          <button ion-button full color="success" (click)="getLatest()">Get Latest graph</button>
+      </ion-col>
+      <ion-col>
+        <button ion-button full color="success" (click)="getLatest()">Export Data to CSV</button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>
