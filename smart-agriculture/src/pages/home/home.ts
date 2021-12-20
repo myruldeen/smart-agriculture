@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, ToastController } from 'ionic-angular';
 import { SocketService } from '../../services/socket.service';
+import { FileService } from '../../services/file.service';
+
 
 @Component({
   selector: 'page-home',
@@ -9,7 +11,7 @@ import { SocketService } from '../../services/socket.service';
 export class HomePage {
   temp: any = 0;
   // Gauge Chart
-  public canvasWidth = 160
+  public canvasWidth = 140
   public soil1 = 0
   public soil2 = 0
   public soilTemp1 = 0
@@ -168,7 +170,11 @@ export class HomePage {
     console.log(e);
   }
 
-  constructor(public navCtrl: NavController, public socket: SocketService, public toastCtrl: ToastController) {
+  constructor(public navCtrl: NavController, 
+              public socket: SocketService, 
+              public toastCtrl: ToastController,
+              private fileService: FileService) {
+                
   }
 
   ionViewDidLoad() {
@@ -206,6 +212,10 @@ export class HomePage {
 			dismissOnPageChange: true
 		});
 		toast.present();
+  }
+
+  download() {
+    this.fileService.testDownload();
   }
 
 }

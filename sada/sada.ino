@@ -1,6 +1,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <Blynk.h>
+#include <SoftwareSerial.h>
 #include <BlynkSimpleEsp8266.h>
 #include "DHT.h"        // DHT11 temperature and humidity sensor Predefined library
 
@@ -8,6 +9,7 @@
 
 #define DHTTYPE DHT11   // DHT 11
 #define dht_dpin D6      //GPIO-0 D3 pin of nodemcu
+SoftwareSerial nodemcu(3,1);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
@@ -33,6 +35,7 @@ DHT dht(dht_dpin, DHTTYPE);
 void setup(void)
 {
   Serial.begin(115200);
+  nodemcu.begin(9600);
   sensors.begin();
   pinMode(S0, OUTPUT);
   pinMode(S1, OUTPUT);
@@ -149,6 +152,8 @@ void loop() {
     digitalWrite(ON_OFF, HIGH);
     //   j=0;digitalWrite(ON_OFF, LOW);
   }
+
+  nodemcu.println(String(h) + "," + String(t) + "," + String(sensorValue1) + "," + String(sensorValue2) + "," + String(map(sensorValue3, 0, 1023, 10, 0)));
 
   Blynk.run(); // Initiates Blynk
   Blynk.virtualWrite(V0, sensorValue1);

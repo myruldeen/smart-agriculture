@@ -1,5 +1,7 @@
 {
   "name": "smart-agriculture",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular"
 }
