@@ -20,13 +20,12 @@ var client = mqtt.connect({
 
 client.on('connect', function () {
     console.log('Connected to Mosca at ');
-    client.subscribe('api-engine');
-    client.subscribe('esp/test');
+    client.subscribe('esp8266/agriculture');
 });
 
 client.on('message', function (topic, message) {
 
-    if (topic === 'esp/test') {
+    if (topic === 'esp8266/agriculture') {
         var data = message.toString();
         var data1 = JSON.parse(data);
         dataStream = data1;

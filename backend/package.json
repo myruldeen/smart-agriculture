@@ -11,6 +11,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "json2csv": "^5.0.6",
     "mongoose": "^4.9.7",
     "morgan": "^1.10.0",
     "mqtt": "^2.7.1",

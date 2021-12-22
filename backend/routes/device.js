@@ -15,7 +15,7 @@ router.get('/:id', function (req, res) {
     if (!deviceId) return;
     Device.findOne({
         _id: deviceId,
-    }, function(err, device) {
+    }, function (err, device) {
         if (err) return res.status(500).send(err);
         if (!device) return res.status(404).end();
         res.json(device);
@@ -27,10 +27,10 @@ router.get('/:id', function (req, res) {
 router.delete('/:id', function (req, res) {
     Device.findOne({
         _id: req.params.id
-    }, function(err, device) {
+    }, function (err, device) {
         if (err) return res.status(500).send(err);
 
-        device.remove(function(err) {
+        device.remove(function (err) {
             if (err) return res.status(500).send(err);
             return res.status(204).end();
         });

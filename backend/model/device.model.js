@@ -12,7 +12,7 @@ const DeviceSchema = new Schema({
     }
 });
 
-DeviceSchema.pre('save', function(next) {
+DeviceSchema.pre('save', function (next) {
     var now = new Date();
     this.updatedAt = now;
     if (!this.createdAt) {

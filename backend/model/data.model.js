@@ -20,7 +20,7 @@ const DataSchema = new Schema({
     }
 });
 
-DataSchema.pre('save', function(next) {
+DataSchema.pre('save', function (next) {
     var now = new Date();
     this.updatedAt = now;
     if (!this.createdAt) {
@@ -29,7 +29,7 @@ DataSchema.pre('save', function(next) {
     next();
 });
 
-DataSchema.post('save', function(doc) {
+DataSchema.post('save', function (doc) {
     //console.log('Post Save Called', doc);
     require('../mqtt/index').onSave(doc)
 });
