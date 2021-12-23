@@ -5,7 +5,21 @@ const Data = require('../model/data.model');
 const router = express.Router();
 const path = require('path');
 
-router.get('/', function (req, res) {
+function dataWithTime(arr) {
+    return arr.map((m) => {
+        return {
+            temp: m.data.temp,
+            humd: m.data.humd,
+            LM35: m.data.LM35,
+            voltage: m.data.voltage,
+            current: m.data.current,
+            light: m.data.light,
+            createdAt: m.createdAt
+        }
+    })
+}
+
+router.get('/save', function (req, res) {
     let limit = parseInt(req.params.limit) || 100;
     Data
         .find({})
@@ -18,10 +32,8 @@ router.get('/', function (req, res) {
 
             const dArr = [];
             data.forEach(element => {
-                // console.log(element.data)
                 dArr.push(element.data)
             });
-
             const csvData = json2csvParser.parse(dArr);
             const csvPath = path.join('excel_data', Date.now() + '-mongodb_fs.csv');
 
@@ -43,14 +55,14 @@ router.get('/file', (req, res, next) => {
         if (err) next(err);
         files.forEach(file => {
             console.log(file)
-            fileList.push(filePath + '/' + file);
+            fileList.push(file);
         });
         res.status(200).json({ fileList: fileList });
     });
 
 })
 
-router.get('/file/:id', (req, res, next) => {
+router.delete('/file/:id', (req, res, next) => {
     const fileId = req.params.id;
     const dirPath = path.join('excel_data');
 

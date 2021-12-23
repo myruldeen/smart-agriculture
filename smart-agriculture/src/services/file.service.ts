@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
-import { ToastController } from 'ionic-angular';
+import { ToastService } from '../services/toast.service';
 
 @Injectable()
 export class FileService {
@@ -13,48 +13,37 @@ export class FileService {
     constructor(private transfer: FileTransfer, 
                 private file: File, 
                 private androidPermissions: AndroidPermissions, 
-                private toastCtrl: ToastController) {}  
+                private toastCtrl: ToastService) {}  
 
     download(fileName, filePath) {  
         let url = encodeURI(filePath);  
         this.fileTransfer = this.transfer.create();  
-        this.fileTransfer.download(url, this.file.externalDataDirectory + fileName, true).then((entry) => {  
+        this.fileTransfer.download(url, this.file.dataDirectory + fileName, true).then((entry) => {  
         
             console.log('download completed: ' + entry.toURL());  
-            let toast = this.toastCtrl.create({
-              position: 'bottom',
-              message: 'Download Completed' + entry.toURL(),
-              duration: 3000,
-              dismissOnPageChange: true
-            });
-            toast.present();
+            this.toastCtrl.toggleToast('Download Completed' + entry.toURL());
+
         }, (error) => {  
             console.log('download failed: ' + error);  
-            let toast = this.toastCtrl.create({
-              position: 'bottom',
-              message: 'Download Fail' + error,
-              duration: 3000,
-              dismissOnPageChange: true
-            });
-            toast.present();
+            this.toastCtrl.toggleToast('Download Fail' + error, 2000);
         });  
     } 
   
-    testDownload() {
-      this.getPermission();
+    testDownload(url) {
+      this.getPermission(url);
     }
   
-    getPermission() {
+    getPermission(url) {
       this.androidPermissions.hasPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE)
         .then(status => {
           if (status.hasPermission) {
-            this.download("pdf-test.pdf","https://www.orimi.com/pdf-test.pdf");
+            this.download(Date.now() + '-mongodb_fs.csv', url);
           } 
           else {
             this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE)
               .then(status => {
                 if(status.hasPermission) {
-                  this.download("pdf-test.pdf","https://www.orimi.com/pdf-test.pdf");
+                  this.download(Date.now() + '-mongodb_fs.csv', url);
                 }
               });
           }

@@ -22,6 +22,8 @@ import { FileService } from '../services/file.service';
 // Module
 import { GaugeChartModule } from 'angular-gauge-chart';
 import { ChartsModule } from 'ng2-charts';
+import { HttpModule } from '@angular/http';
+import { ToastService } from '../services/toast.service';
 
 
 
@@ -35,7 +37,8 @@ import { ChartsModule } from 'ng2-charts';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     ChartsModule,
-    GaugeChartModule
+    GaugeChartModule,
+    HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -49,6 +52,7 @@ import { ChartsModule } from 'ng2-charts';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SocketService,
     DataService,
+    ToastService,
     FileTransfer,
     FileTransferObject,
     File,

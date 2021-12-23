@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, ToastController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { SocketService } from '../../services/socket.service';
 import { FileService } from '../../services/file.service';
+import { DataService } from '../../services/data.service';
+import { ToastService } from '../../services/toast.service';
 
 
 @Component({
@@ -172,8 +174,9 @@ export class HomePage {
 
   constructor(public navCtrl: NavController, 
               public socket: SocketService, 
-              public toastCtrl: ToastController,
-              private fileService: FileService) {
+              public toastCtrl: ToastService,
+              private fileService: FileService,
+              private dataService: DataService) {
                 
   }
 
@@ -205,17 +208,14 @@ export class HomePage {
     });
   }
   getLatest() {
-    let toast = this.toastCtrl.create({
-			position: 'bottom',
-			message: 'Hi',
-			duration: 3000,
-			dismissOnPageChange: true
-		});
-		toast.present();
+    this.toastCtrl.toggleToast('Hi');
   }
 
   download() {
-    this.fileService.testDownload();
+    this.dataService.saveFileCSV().subscribe((response) => {
+      let msg = response.json();
+      this.toastCtrl.toggleToast(msg.msg);
+    });
   }
 
 }
