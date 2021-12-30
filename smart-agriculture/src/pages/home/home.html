@@ -82,9 +82,9 @@
 </ion-row>
 </ion-grid>
 <ion-grid>
-  <ion-row>
+  <ion-row *ngIf="isData">
       <ion-col>
-          <canvas baseChart width="300" height="400"
+          <canvas baseChart width="300" height="400" 
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"

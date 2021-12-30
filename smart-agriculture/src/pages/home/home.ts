@@ -1,16 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { SocketService } from '../../services/socket.service';
 import { FileService } from '../../services/file.service';
 import { DataService } from '../../services/data.service';
 import { ToastService } from '../../services/toast.service';
-
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+
+  public data: Array<any>;
+  private subData: any;
+  public lastRecord: any;
+  isData: boolean = false;
+
+
   temp: any = 0;
   // Gauge Chart
   public canvasWidth = 140
@@ -83,58 +90,8 @@ export class HomePage {
   public lineChartLegend: boolean = true;
   public lineChartType: string = 'line';
 
-  public lineChartData: Array<any> = [{
-    label: 'Soil 1',
-    data: [16, 16, 18, 18.9, 19, 18.1, 17.7],
-    fill: false,
-    // borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  },
-  {
-    label: 'Soil 2',
-    data: [65, 59, 80, 81, 56, 55, 40].reverse(),
-    fill: false,
-    // borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  },
-  {
-    label: 'Soil Temp 1',
-    data: [65, 59, 80, 81, 56, 55, 40].reverse(),
-    fill: false,
-    // borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  },
-  {
-    label: 'Soil Temp 2',
-    data: [65, 59, 80, 81, 56, 55, 40].reverse(),
-    fill: false,
-    // borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  },
-  {
-    label: 'Light',
-    data: [2, , 1, 7, 10, 10, 6],
-    fill: false,
-    // borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  },
-  {
-    label: 'Temp',
-    data: [30, 32, 36, 38, 35, 32, 39].reverse(),
-    fill: false,
-    // borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  },
-  {
-    label: 'Humidity',
-    data: [50, 60, 60, 70, 70, 80, 74],
-    fill: false,
-    // borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  }
-
-  ];
-  public lineChartLabels: Array<any> = [1, 2, 3, 4, 5, 6, 7];
+  public lineChartData: Array<any> = [];
+  public lineChartLabels: Array<any> = [];
 
   public lineChartColors: Array<any> = [
     { // grey
@@ -172,43 +129,166 @@ export class HomePage {
     console.log(e);
   }
 
-  constructor(public navCtrl: NavController, 
-              public socket: SocketService, 
-              public toastCtrl: ToastService,
-              private fileService: FileService,
-              private dataService: DataService) {
-                
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+
+  constructor(public navCtrl: NavController,
+    public socket: SocketService,
+    public toastCtrl: ToastService,
+    private fileService: FileService,
+    private dataService: DataService) {
+
   }
 
   ionViewDidLoad() {
+
+    this.getData();
     this.socketInit();
+    this.dataSocket();
   }
 
-  socketInit() {
-    this.socket.getData().subscribe((data) => {
-      this.temp = data;
-      this.soil1 = data.solarV;
-      this.soil2 = data.solarV;
-      this.soilTemp1 = data.tempLM35;
-      this.soilTemp2 = data.tempLM35;
-      this.light = data.lightSensor;
-      this.temperature = data.temp;
-      this.humidity = data.humd;
+  ionViewDidUnload() {
+    this.subData ? this.subData.unsubscribe() : '';
+  }
 
-      this.bottomSoil1 = data.solarV + ' %';
-      this.bottomSoil2 = data.solarV + ' %';
-      this.bottomSoilTemp1 = data.tempLM35 + ' C';
-      this.bottomSoilTemp2 = data.tempLM35 + ' C';
-      this.bottomLight = data.lightSensor + ' lux';
-      this.bottomTemp = data.temp + ' C';
-      this.bottomHumd = data.humd + ' %';
+  getData() {
+    this.dataService.get().subscribe((response) => {
+      this.data = response.json();
+      this.genChart();
+      this.lastRecord = this.data[0]; // descending order data
+
+    });
+  }
+
+  dataSocket() {
+      this.socket.getMessage().subscribe((data) => {
+      // this.temp = data;
+      this.soil1 = data.data.Soil1;
+      this.soil2 = data.data.Soil2;
+      this.soilTemp1 = data.data.SoilTemp1;
+      this.soilTemp2 = data.data.SoilTemp2;
+      this.light = data.data.Light;
+      this.temperature = data.data.Temp;
+      this.humidity = data.data.Humd;
+
+      this.bottomSoil1 = data.data.Soil1 + ' %';
+      this.bottomSoil2 = data.data.Soil2 + ' %';
+      this.bottomSoilTemp1 = data.data.SoilTemp1.toFixed(2) + ' C';
+      this.bottomSoilTemp2 = data.data.SoilTemp2.toFixed(2) + ' C';
+      this.bottomLight = data.data.Light + ' lux';
+      this.bottomTemp = data.data.Temp.toFixed(2) + ' C';
+      this.bottomHumd = data.data.Humd + ' %';
 
       // this.lineChartData.push(data);
       // console.log(data);
+
     });
   }
+
+  socketInit() {
+    this.subData = this.socket.getData().subscribe((data) => {
+      if (this.data.length <= 0) return;
+      this.data.splice(this.data.length - 1, 1); // remove the last record
+      this.data.push(data); // add the new one
+      this.lastRecord = data;
+    }, (err) => console.error(err));
+  }
+
+  genChart() {
+    let data = this.data;
+    let _dtArr: Array<any> = [];
+    let _lblArr: Array<any> = [];
+
+    let soil1: Array<any> = [];
+    let soil2: Array<any> = [];
+    let light: Array<any> = [];
+    let temp: Array<any> = [];
+    let humd: Array<any> = [];
+    let soilTemp1: Array<any> = [];
+    let soilTemp2: Array<any> = [];
+
+  
+    for (var i = 0; i < data.length; i++) {
+      let _d = data[i];
+      soil1.push(_d.data.Soil1);
+      soil2.push(_d.data.Soil2);
+      light.push(_d.data.Light);
+      temp.push(_d.data.Temp);
+      humd.push(_d.data.Humd);
+      soilTemp1.push(_d.data.SoilTemp1);
+      soilTemp2.push(_d.data.SoilTemp2);
+      _lblArr.push(this.formatDate(_d.createdAt));
+    }
+    // reverse data to show the latest on the right side
+    soil1.reverse(); light.reverse(); soil2.reverse(); temp.reverse(); humd.reverse(); soilTemp1.reverse(); soilTemp2.reverse(); _lblArr.reverse();
+    _dtArr = [
+      {
+        data: soil1,
+        label: 'Soil 1',
+        fill: false,
+        // borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      },
+      {
+        data: soil2,
+        label: 'Soil 2',
+        fill: false,
+        // borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      },
+      {
+        data: light,
+        label: 'Light',
+        fill: false,
+        // borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      },
+      {
+        data: temp,
+        label: 'Temperature',
+        fill: false,
+        // borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      },
+      {
+        data: humd,
+        label: 'Humidity',
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      },
+      {
+        data: soilTemp1,
+        label: 'Soil Temp 1',
+        fill: false,
+        // borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      },
+      {
+        data: soilTemp2,
+        label: 'Soil Temp 2',
+        fill: false,
+        // borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }
+    ];
+
+    // this.lineChartData = _dtArr.slice(0, 10);
+    // this.lineChartLabels = _lblArr.slice(0, 10);
+    this.lineChartData = _dtArr;
+    this.lineChartLabels = _lblArr;
+    this.isData = true;
+  }
+
   getLatest() {
-    this.toastCtrl.toggleToast('Hi');
+    this.isData = false;
+    this.dataService.get().subscribe((response) => {
+      this.data = response.json();
+      this.genChart();
+      this.toastCtrl.toggleToast('Graph updated!');
+      this.isData = true;
+    });
+    
+    
   }
 
   download() {
@@ -216,6 +296,13 @@ export class HomePage {
       let msg = response.json();
       this.toastCtrl.toggleToast(msg.msg);
     });
+  }
+
+  private formatDate(originalTime) {
+    var d = new Date(originalTime);
+    var datestring =
+      d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear() + ' ' + d.getHours() + ':' + d.getMinutes();
+    return datestring;
   }
 
 }

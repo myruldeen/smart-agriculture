@@ -5,39 +5,53 @@ var mqtt = require('mqtt');
 // var data = require('./data.model');
 var socket = undefined;
 var dataStream;
+var dataSet;
 
-var client = mqtt.connect({
-    port: 1883,
-    protocol: 'mqtt',
-    host: '127.0.0.1',
-    clientId: 'API_Server_Dev',
+var options = {
+    port: 18685,
+    host: 'mqtt://driver.cloudmqtt.com',
+    clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
+    username: 'spvjjkqq',
+    password: 'hc_7fOQmGQaE',
+    keepAlive: 60,
     reconnectPeriod: 1000,
-    username: 'API_Server_Dev',
-    password: 'API_Server_Dev',
-    keepalive: 300,
-    rejectUnauthorized: false
-});
+    protocolId: 'MQTT',
+    protocolVersion: 4,
+    clean: true,
+    encoding: 'utf8'
+}
 
-client.on('connect', function () {
-    console.log('Connected to Mosca at ');
-    client.subscribe('esp8266/agriculture');
-});
-
-client.on('message', function (topic, message) {
-
-    if (topic === 'esp8266/agriculture') {
-        var data = message.toString();
-        var data1 = JSON.parse(data);
-        dataStream = data1;
-        Data.create(data1, function (err, data) {
-            if (err) return console.error(err);
-            // if the record has been saved successfully, 
-            // websockets will trigger a message to the web-app
-            // console.log('Data Saved :', data.data);
-        });
-    } else {
-        console.log('Unknown topic', topic);
-    }
+var client = mqtt.connect('mqtt://driver.cloudmqtt.com', options);
+client.on('connect', function() {
+    console.log('connected to broker');
+    client.subscribe('esp/sada', function() {
+        client.on('message', function(topic, message, packet) {
+            // console.log(message.toString())
+            if (topic === 'esp/sada') {
+                var data = message.toString();
+                try {
+                    var data1 = JSON.parse(data);
+                    dataSet = data1;
+                    dataStream = data1;
+                    socket.emit('data', dataSet);
+                } catch (error) {
+                    console.log(error.message);
+                }
+                
+            } else {
+                console.log('Unknown topic', topic);
+            }
+        })
+        setInterval(async function() {
+            try {
+                var result = await Data.create(dataSet);
+                // console.log(result.data);
+            } catch (error) {
+                console.log(error.message);
+            }
+        }, 60000);
+    
+    })
 
 });
 

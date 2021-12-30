@@ -4,18 +4,19 @@
 #include <SoftwareSerial.h>
 #include <BlynkSimpleEsp8266.h>
 #include "DHT.h"        // DHT11 temperature and humidity sensor Predefined library
+#include <ArduinoJson.h>
 
 #define ONE_WIRE_BUS 2
 
 #define DHTTYPE DHT11   // DHT 11
 #define dht_dpin D6      //GPIO-0 D3 pin of nodemcu
-SoftwareSerial nodemcu(3,1);
+//SoftwareSerial nodemcu(3, 1);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-char auth[] = "jk3Dnpr7Y4cVX73g-mpCspUhEZJGEbUK";    // You should get Auth Token in the Blynk App.
-char ssid[] = "SHA-256";                           // Your WiFi credentials.
-char pass[] = "pass1234";
+char auth[] = "juWQCZFKcQMfG0OzmVdhmhhVOr7PEIKN";    // You should get Auth Token in the Blynk App.
+char ssid[] = "MY Wi-Fi";                           // Your WiFi credentials.
+char pass[] = "Shuhaizal19";
 
 int sensorPin = A0;
 int sensorValue1 = 0;
@@ -23,6 +24,7 @@ int sensorValue2 = 0;
 int sensorValue3 = 0;
 int sensorValue4 = 0;
 int sensorValue5 = 0;
+int light = 0;
 #define S0 D0
 #define S1 D1
 #define S2 D2
@@ -35,14 +37,12 @@ DHT dht(dht_dpin, DHTTYPE);
 void setup(void)
 {
   Serial.begin(115200);
-  nodemcu.begin(9600);
   sensors.begin();
   pinMode(S0, OUTPUT);
   pinMode(S1, OUTPUT);
   pinMode(S2, OUTPUT);
   pinMode(S3, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  // Serial.begin(115200);
   pinMode(ON_OFF, OUTPUT);
   pinMode(SW, OUTPUT);
   Blynk.begin(auth, ssid, pass);
@@ -65,14 +65,9 @@ void loop() {
   int m1 = 0;
   int m2 = 0;
 
-
-  //   for(i=0;i<1000;i++)
-  {
-    h = dht.readHumidity();    //Read humidity level
-    t = dht.readTemperature(); //Read temperature in celcius
-    // f = (h * 1.8) + 32;        //Temperature converted to Fahrenheit
-
-  }
+  h = dht.readHumidity();    //Read humidity level
+  t = dht.readTemperature(); //Read temperature in celcius
+  // f = (h * 1.8) + 32;        //Temperature converted to Fahrenheit
 
   digitalWrite(S0, LOW);
   digitalWrite(S1, LOW);
@@ -101,29 +96,8 @@ void loop() {
   // Serial.println(analogRead(sensorPin));
   //   sensorValue3 = ( 100 - ( (analogRead(sensorPin)/1024) * 100 ) );
   sensorValue3 = (analogRead(sensorPin)); delay(1);
-  digitalWrite(S0, HIGH);
-  digitalWrite(S1, HIGH);
-  digitalWrite(S2, LOW);
-  digitalWrite(S3, LOW);
-  //Serial.print("Sensor 4 ");
-  // Serial.println(analogRead(sensorPin));
-  // sensorValue4 = ( 100 - ( (analogRead(sensorPin)/1024) * 100 ) );
-  sensorValue4 = (analogRead(sensorPin)); delay(1);
+  light = map(sensorValue3, 0, 1023, 10, 0);
 
-
-  digitalWrite(S0, LOW);
-  digitalWrite(S1, LOW);
-  digitalWrite(S2, HIGH);
-  digitalWrite(S3, LOW);
-  // Serial.print("LIGHT Sensor 5 ");
-
-  sensorValue5 = (analogRead(sensorPin)); delay(1);
-  // Serial.println(analogRead(sensorPin));
-  //sensorValue5 = ( 100 - ( (analogRead(sensorPin)/1024) * 100 ) );
-  //Serial.print("humidity level");
-  //Serial.print(h);
-  //Serial.print("TEMP");
-  //Serial.print(t);
 
   if (m1 > 700)
   {
@@ -133,14 +107,6 @@ void loop() {
   {
     digitalWrite(SW, HIGH);
   }
-
-
-  //Serial.println(VBR);
-  Serial.println("humidity: " + String(h));
-  Serial.println("temp: " + String(t));
-  Serial.println("Soil 1: " + String(sensorValue1));
-  Serial.println("Soil 2: " + String(sensorValue2));
-  Serial.println("LDR: " + String(map(sensorValue3, 0, 1023, 10, 0)));
 
   delay(10);
   // int j;
@@ -153,7 +119,7 @@ void loop() {
     //   j=0;digitalWrite(ON_OFF, LOW);
   }
 
-  nodemcu.println(String(h) + "," + String(t) + "," + String(sensorValue1) + "," + String(sensorValue2) + "," + String(map(sensorValue3, 0, 1023, 10, 0)));
+
 
   Blynk.run(); // Initiates Blynk
   Blynk.virtualWrite(V0, sensorValue1);
@@ -163,6 +129,9 @@ void loop() {
   Blynk.virtualWrite(V4, h);
   Blynk.virtualWrite(V5, sensors.getTempCByIndex(0));
   Blynk.virtualWrite(V6, sensors.getTempCByIndex(1));
+
+
+
   delay(1000);
 
 

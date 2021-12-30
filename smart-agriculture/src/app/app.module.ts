@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 // Import Page
@@ -22,10 +23,7 @@ import { FileService } from '../services/file.service';
 // Module
 import { GaugeChartModule } from 'angular-gauge-chart';
 import { ChartsModule } from 'ng2-charts';
-import { HttpModule } from '@angular/http';
 import { ToastService } from '../services/toast.service';
-
-
 
 @NgModule({
   declarations: [
@@ -49,7 +47,7 @@ import { ToastService } from '../services/toast.service';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     SocketService,
     DataService,
     ToastService,
@@ -60,4 +58,4 @@ import { ToastService } from '../services/toast.service';
     FileService
   ]
 })
-export class AppModule {}
+export class AppModule { }

@@ -11,10 +11,11 @@ export class SocketService {
             // 'query': 'token=' + Globals.API_AUTH_TOKEN
         });
     }
+   
 
     getData() {
         let observable = new Observable<any>(observer => {
-            this.socket.on('temp', (data) => {
+            this.socket.on('data:save:', (data) => {
                 observer.next(data);
             });
 
@@ -24,5 +25,18 @@ export class SocketService {
             };
         })
         return observable;
+    }
+
+    getMessage(): Observable<any> {
+        return Observable.create((observer) => {
+            this.socket.on('data', (data) => {
+                observer.next(data);
+            });
+
+            return (error) => {
+                console.error(error);
+                this.socket.disconnect();
+            }
+        })
     }
 }

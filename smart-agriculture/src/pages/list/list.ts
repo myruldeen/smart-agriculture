@@ -25,7 +25,7 @@ export class ListPage {
   }
 
   delete(item) {
-    console.log(Globals.BASE_API_URL + item);
+    console.log(item);
   }
 
   download(item) {

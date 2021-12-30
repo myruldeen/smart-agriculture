@@ -8,7 +8,7 @@ const path = require('path');
 const mqtt = require('./mqtt/index');
 // Connect to database
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB || 'mongodb://localhost:27017/test', {
+mongoose.connect(process.env.MONGODB || 'mongodb://localhost:27017/agriculture', {
     options: {
         db: {
             safe: true

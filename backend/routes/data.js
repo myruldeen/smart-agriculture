@@ -35,13 +35,13 @@ router.get('/save', function (req, res) {
                 dArr.push(element.data)
             });
             const csvData = json2csvParser.parse(dArr);
-            const csvPath = path.join('excel_data', Date.now() + '-mongodb_fs.csv');
+            const csvPath = path.join('excel_data', Date.now() + '.csv');
 
             // console.log(dArr)
             fs.writeFile(csvPath, csvData, function (error) {
                 if (error) throw error;
-                console.log("Write to mongodb_fs.csv successfully!");
-                res.status(200).json({ msg: 'Data successfully save as excel' });
+                console.log("Write to csv successfully!");
+                res.status(200).json({ msg: 'Data successfully save as csv' });
             });
 
 
@@ -72,13 +72,24 @@ router.delete('/file/:id', (req, res, next) => {
     })
 })
 
-router.get('/:deviceId/:limit', function (req, res) {
-    var macAddress = req.params.deviceId;
+// router.get('/:deviceId/:limit', function (req, res) {
+//     var macAddress = req.params.deviceId;
+//     var limit = parseInt(req.params.limit) || 30;
+//     Data
+//         .find({
+//             macAddress: macAddress
+//         })
+//         .sort({ 'createdAt': -1 })
+//         .limit(limit)
+//         .exec(function (err, devices) {
+//             if (err) return res.status(500).send(err);
+//             res.status(200).json(devices);
+//         });
+// });
+router.get('/:limit', function (req, res) {
     var limit = parseInt(req.params.limit) || 30;
     Data
-        .find({
-            macAddress: macAddress
-        })
+        .find({})
         .sort({ 'createdAt': -1 })
         .limit(limit)
         .exec(function (err, devices) {
