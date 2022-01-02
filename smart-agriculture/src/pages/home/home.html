@@ -109,7 +109,7 @@
 <ion-grid>
   <ion-row>
       <ion-col>
-          <canvas baseChart width="300" height="400"
+          <canvas baseChart width="300" height="400" *ngIf="isData"
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"

@@ -4,7 +4,6 @@ import { SocketService } from '../../services/socket.service';
 import { FileService } from '../../services/file.service';
 import { DataService } from '../../services/data.service';
 import { ToastService } from '../../services/toast.service';
-import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'page-home',
@@ -128,9 +127,7 @@ export class HomePage {
   public chartHovered(e: any): void {
     console.log(e);
   }
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
+  
   constructor(public navCtrl: NavController,
     public socket: SocketService,
     public toastCtrl: ToastService,
@@ -280,12 +277,15 @@ export class HomePage {
   }
 
   getLatest() {
-    this.isData = false;
+    // this.isData = false;
     this.dataService.get().subscribe((response) => {
       this.data = response.json();
-      this.genChart();
-      this.toastCtrl.toggleToast('Graph updated!');
-      this.isData = true;
+      
+      // this.isData = true;
+      setTimeout(() => {
+        this.genChart();
+        this.toastCtrl.toggleToast('Graph updated!');
+      }, 1000);
     });
     
     
