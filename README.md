@@ -1,7 +1,8 @@
 # smart-agriculture
  smart agriculture data analytics
-
+<!-- 
 ![alt text][logo]
 
-[logo]: https://github.com/myruldeen/smart-agriculture/blob/master/images/1.PNG|width=100px "Image 1"  
+[logo]: https://github.com/myruldeen/smart-agriculture/blob/master/images/1.PNG|width=100px "Image 1"   -->
 
+<img src="https://cloud.githubusercontent.com/assets/yourgif.gif" width="400" height="790">
