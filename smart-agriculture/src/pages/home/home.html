@@ -8,9 +8,15 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-grid>
-    <ion-row>
-        <ion-col>
+  <ion-card>
+    
+    <ion-card-header>
+      Soil Sensor
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
             <rg-gauge-chart
                 [canvasWidth]="canvasWidth"
                 [needleValue]="soil1"
@@ -18,73 +24,92 @@
                 [options]="options"
                 [name]="'Soil 1'"
                 [bottomLabel]="bottomSoil1"></rg-gauge-chart>
+          </ion-col>
+          <ion-col>
+            <rg-gauge-chart
+                [canvasWidth]="canvasWidth"
+                [needleValue]="soil1"
+                [centralLabel]="centralLabel"
+                [options]="options"
+                [name]="'Soil 1'"
+                [bottomLabel]="bottomSoil1"></rg-gauge-chart>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
+    </ion-card-content>
+  
+  </ion-card>
+  <ion-card>
+    
+    <ion-card-header>
+      Soil Temperature Sensor
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <rg-gauge-chart
+                [canvasWidth]="canvasWidth"
+                [needleValue]="soilTemp1"
+                [centralLabel]="centralLabel"
+                [options]="options"
+                [name]="'Soil Temp 1'"
+                [bottomLabel]="bottomSoilTemp1"></rg-gauge-chart>
         </ion-col>
         <ion-col>
-          <rg-gauge-chart
-              [canvasWidth]="canvasWidth"
-              [needleValue]="soil2"
-              [centralLabel]="centralLabel"
-              [options]="options"
-              [name]="'Soil 2'"
-              [bottomLabel]="bottomSoil2"></rg-gauge-chart>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-          <rg-gauge-chart
-              [canvasWidth]="canvasWidth"
-              [needleValue]="soilTemp1"
-              [centralLabel]="centralLabel"
-              [options]="options"
-              [name]="'Soil Temp 1'"
-              [bottomLabel]="bottomSoilTemp1"></rg-gauge-chart>
-      </ion-col>
-      <ion-col>
-        <rg-gauge-chart
-            [canvasWidth]="canvasWidth"
-            [needleValue]="soilTemp2"
-            [centralLabel]="centralLabel"
-            [options]="options"
-            [name]="'Soil Temp 2'"
-            [bottomLabel]="bottomSoilTemp2"></rg-gauge-chart>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col>
-        <rg-gauge-chart
-            [canvasWidth]="canvasWidth"
-            [needleValue]="light"
-            [centralLabel]="centralLabel"
-            [options]="options"
-            [name]="'Light'"
-            [bottomLabel]="bottomLight"></rg-gauge-chart>
-    </ion-col>
-    <ion-col>
-      <rg-gauge-chart
-          [canvasWidth]="canvasWidth"
-          [needleValue]="temperature"
-          [centralLabel]="centralLabel"
-          [options]="options"
-          [name]="'Temperature'"
-          [bottomLabel]="bottomTemp"></rg-gauge-chart>
-  </ion-col>
-</ion-row>
-<ion-row>
-  <ion-col>
-    <rg-gauge-chart
-          [canvasWidth]="canvasWidth"
-          [needleValue]="humidity"
-          [centralLabel]="centralLabel"
-          [options]="options"
-          [name]="'Humidity'"
-          [bottomLabel]="bottomHumd"></rg-gauge-chart>
-  </ion-col>
-</ion-row>
-</ion-grid>
+              <rg-gauge-chart
+                  [canvasWidth]="canvasWidth"
+                  [needleValue]="soilTemp2"
+                  [centralLabel]="centralLabel"
+                  [options]="options"
+                  [name]="'Soil Temp 2'"
+                  [bottomLabel]="bottomSoilTemp2"></rg-gauge-chart>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
+    </ion-card-content>
+  
+  </ion-card>
+  <ion-card>
+    
+    <ion-card-header>
+      DHT Sensor
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <h6 ion-text text-center>Temperature</h6>
+             <h1 ion-text text-center>{{temperature}} C</h1>
+          </ion-col>
+          <ion-col>
+            <h6 ion-text text-center>Humidity</h6>
+            <h1 ion-text text-center>{{humidity}} %</h1>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Light Sensor
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col text-center>
+            <h1 ion-text>{{light}} Lux</h1>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
 <ion-grid>
-  <ion-row *ngIf="isData">
+  <ion-row>
       <ion-col>
-          <canvas baseChart width="300" height="400" 
+          <canvas baseChart width="300" height="400"
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"
