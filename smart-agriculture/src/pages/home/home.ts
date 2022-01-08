@@ -4,6 +4,7 @@ import { SocketService } from '../../services/socket.service';
 import { FileService } from '../../services/file.service';
 import { DataService } from '../../services/data.service';
 import { ToastService } from '../../services/toast.service';
+import * as HighCharts from 'highcharts';
 
 @Component({
   selector: 'page-home',
@@ -15,6 +16,8 @@ export class HomePage {
   private subData: any;
   public lastRecord: any;
   isData: boolean = false;
+  public relayA: String = "ON";
+  public relayB: String = "OFF";
 
 
   temp: any = 0;
@@ -127,13 +130,28 @@ export class HomePage {
   public chartHovered(e: any): void {
     console.log(e);
   }
-  
+
+  // Pie Chart
+  public pieChartOptions: any = {
+    responsive: true,
+    legend: {
+      position: 'bottom'
+    }
+  }
+  public pieChartLabels: string[] = ['Nitrogen', 'Phosphorus', 'Potassium'];
+  public pieChartData: number[] = [30, 118, 108];
+  public pieChartType: string = 'pie';
+
   constructor(public navCtrl: NavController,
     public socket: SocketService,
     public toastCtrl: ToastService,
     private fileService: FileService,
     private dataService: DataService) {
 
+  }
+
+  ionViewDidEnter() {
+    // this.plotDynamicSplineChart();
   }
 
   ionViewDidLoad() {
@@ -157,7 +175,7 @@ export class HomePage {
   }
 
   dataSocket() {
-      this.socket.getMessage().subscribe((data) => {
+    this.socket.getMessage().subscribe((data) => {
       // this.temp = data;
       this.soil1 = data.data.Soil1;
       this.soil2 = data.data.Soil2;
@@ -175,6 +193,8 @@ export class HomePage {
       this.bottomTemp = data.data.Temp.toFixed(2) + ' C';
       this.bottomHumd = data.data.Humd + ' %';
 
+      (this.soil1 > 0) ? this.relayA = "ON" : this.relayA = "OFF";
+      (this.soil2 > 0) ? this.relayB = "ON" : this.relayB = "OFF";
       // this.lineChartData.push(data);
       // console.log(data);
 
@@ -203,7 +223,7 @@ export class HomePage {
     let soilTemp1: Array<any> = [];
     let soilTemp2: Array<any> = [];
 
-  
+
     for (var i = 0; i < data.length; i++) {
       let _d = data[i];
       soil1.push(_d.data.Soil1);
@@ -280,15 +300,15 @@ export class HomePage {
     // this.isData = false;
     this.dataService.get().subscribe((response) => {
       this.data = response.json();
-      
+
       // this.isData = true;
       setTimeout(() => {
         this.genChart();
         this.toastCtrl.toggleToast('Graph updated!');
       }, 1000);
     });
-    
-    
+
+
   }
 
   download() {
@@ -303,6 +323,109 @@ export class HomePage {
     var datestring =
       d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear() + ' ' + d.getHours() + ':' + d.getMinutes();
     return datestring;
+  }
+
+  public plotDynamicSplineChart() {
+    let myChart = HighCharts.chart('dynamicSpline', {
+      chart: {
+        type: 'spline',
+        animation: true, // don't animate in old IE
+        marginRight: 10,
+        events: {
+          load: function () {
+
+            // set up the updating of the chart each second
+            var series1 = this.series[0];
+            var series2 = this.series[1];
+            setInterval(function () {
+              var x = (new Date()).getTime(), // current time
+              y = Math.floor((Math.random() * 10) + 15),
+              z = Math.floor((Math.random() * 20) + 15);
+              // light = Math.floor((Math.random() * 10) + 15),
+              // soil1 = Math.floor((Math.random() * 20) + 15),
+              // soil2 = Math.floor((Math.random() * 10) + 15),
+              // soilTemp1 = Math.floor((Math.random() * 20) + 15),
+              // soilTemp2 = Math.floor((Math.random() * 20) + 15);
+              series1.addPoint([x, y], true, true);
+              series2.addPoint([x, z], true, true);
+              // series1.addPoint([x, temp], true, true);
+              // series2.addPoint([x, humd], true, true);
+              // series1.addPoint([x, temp], true, true);
+              // series2.addPoint([x, humd], true, true);
+              // series1.addPoint([x, temp], true, true);
+            }, 1000);
+          }
+        }
+      },
+
+      time: {
+        useUTC: false
+      },
+
+      title: {
+        text: 'Live data'
+      },
+      xAxis: {
+        type: 'datetime',
+        tickPixelInterval: 150
+      },
+      yAxis: {
+        title: {
+          text: 'Value'
+        },
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
+      },
+      tooltip: {
+        headerFormat: '<b>{series.name}</b><br/>',
+        pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
+      },
+      legend: {
+        enabled: true
+      },
+      exporting: {
+        enabled: false
+      },
+      series: [{
+        name: 'Temperature',
+        type: undefined,
+        data: (function () {
+          // generate an array of random data
+          var data = [],
+            time = (new Date()).getTime(),
+            i;
+
+          for (i = -19; i <= 0; i += 1) {
+            data.push({
+              x: time + i * 1000,
+              y: Math.random()
+            });
+          }
+          return data;
+        }())
+      },{
+        name: 'Humidity',
+        type: undefined,
+        data: (function () {
+          // generate an array of random data
+          var data = [],
+            time = (new Date()).getTime(),
+            i;
+
+          for (i = -19; i <= 0; i += 1) {
+            data.push({
+              x: time + i * 1000,
+              y: Math.random()
+            });
+          }
+          return data;
+        }())
+      }]
+
+    });
   }
 
 }
