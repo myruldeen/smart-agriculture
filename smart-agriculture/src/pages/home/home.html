@@ -81,12 +81,12 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <h6 ion-text text-center>Temperature</h6>
-             <h1 ion-text text-center>{{temperature}} C</h1>
+            <h6 ion-text text-center color="light">Temperature</h6>
+             <h1 ion-text text-center color="light"><ion-icon name="md-thermometer"></ion-icon>  {{temperature}} C</h1>
           </ion-col>
           <ion-col>
-            <h6 ion-text text-center>Humidity</h6>
-            <h1 ion-text text-center>{{humidity}} %</h1>
+            <h6 ion-text text-center color="light">Humidity</h6>
+            <h1 ion-text text-center color="light"><ion-icon name="md-water"></ion-icon> {{humidity}} %</h1>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -100,12 +100,12 @@
       <ion-grid>
         <ion-row>
           <ion-col text-center>
-            <h6 ion-text text-center>Relay A</h6>
-            <h1 ion-text>{{relayA}}</h1>
+            <h6 ion-text text-center color="light">Relay A</h6>
+            <h1 ion-text color="light">{{relayA}}</h1>
           </ion-col>
           <ion-col text-center>
-            <h6 ion-text text-center>Relay B</h6>
-            <h1 ion-text>{{relayB}}</h1>
+            <h6 ion-text text-center color="light">Relay B</h6>
+            <h1 ion-text color="light">{{relayB}}</h1>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -119,7 +119,8 @@
       <ion-grid>
         <ion-row>
           <ion-col text-center>
-            <h1 ion-text>{{light}} Lux</h1>
+            <h1><ion-icon name="sunny" color="light"></ion-icon></h1>
+            <h1 ion-text color="light">{{light}} Lux</h1>
           </ion-col>
         </ion-row>
       </ion-grid>

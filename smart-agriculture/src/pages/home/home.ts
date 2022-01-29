@@ -16,7 +16,7 @@ export class HomePage {
   private subData: any;
   public lastRecord: any;
   isData: boolean = false;
-  public relayA: String = "ON";
+  public relayA: String = "OFF";
   public relayB: String = "OFF";
 
 
@@ -54,7 +54,12 @@ export class HomePage {
 
   // Line Chart
   public lineChartOptions: any = {
+     // animation duration after a resize
     responsive: true,
+    animation: {
+      duration: 0, // general animation time
+    },
+    responsiveAnimationDuration: 0,
     legend: {
       position: 'bottom'
     },
@@ -96,30 +101,30 @@ export class HomePage {
   public lineChartLabels: Array<any> = [];
 
   public lineChartColors: Array<any> = [
-    { // grey
-      backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    },
-    { // dark grey
-      backgroundColor: 'rgba(77,83,96,0.2)',
-      borderColor: 'rgba(77,83,96,1)',
-      pointBackgroundColor: 'rgba(77,83,96,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(77,83,96,1)'
-    },
-    { // grey
-      backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    }
+    // { // grey
+    //   backgroundColor: 'rgba(148,159,177,0.2)',
+    //   borderColor: 'rgba(148,159,177,1)',
+    //   pointBackgroundColor: 'rgba(148,159,177,1)',
+    //   pointBorderColor: '#fff',
+    //   pointHoverBackgroundColor: '#fff',
+    //   pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    // },
+    // { // dark grey
+    //   backgroundColor: 'rgba(77,83,96,0.2)',
+    //   borderColor: 'rgba(77,83,96,1)',
+    //   pointBackgroundColor: 'rgba(77,83,96,1)',
+    //   pointBorderColor: '#fff',
+    //   pointHoverBackgroundColor: '#fff',
+    //   pointHoverBorderColor: 'rgba(77,83,96,1)'
+    // },
+    // { // grey
+    //   backgroundColor: 'rgba(148,159,177,0.2)',
+    //   borderColor: 'rgba(148,159,177,1)',
+    //   pointBackgroundColor: 'rgba(148,159,177,1)',
+    //   pointBorderColor: '#fff',
+    //   pointHoverBackgroundColor: '#fff',
+    //   pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    // }
   ];
 
   // events
@@ -242,28 +247,28 @@ export class HomePage {
         data: soil1,
         label: 'Soil 1',
         fill: false,
-        // borderColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(112,128,144)',
         tension: 0.1
       },
       {
         data: soil2,
         label: 'Soil 2',
         fill: false,
-        // borderColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
       },
       {
         data: light,
         label: 'Light',
         fill: false,
-        // borderColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(255,255,0)',
         tension: 0.1
       },
       {
         data: temp,
         label: 'Temperature',
         fill: false,
-        // borderColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(255,0,255)',
         tension: 0.1
       },
       {
@@ -277,14 +282,14 @@ export class HomePage {
         data: soilTemp1,
         label: 'Soil Temp 1',
         fill: false,
-        // borderColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(139,69,19)',
         tension: 0.1
       },
       {
         data: soilTemp2,
         label: 'Soil Temp 2',
         fill: false,
-        // borderColor: 'rgb(75, 192, 192)',
+        // borderColor: 'rgb(210,105,30)',
         tension: 0.1
       }
     ];
@@ -339,8 +344,8 @@ export class HomePage {
             var series2 = this.series[1];
             setInterval(function () {
               var x = (new Date()).getTime(), // current time
-              y = Math.floor((Math.random() * 10) + 15),
-              z = Math.floor((Math.random() * 20) + 15);
+                y = Math.floor((Math.random() * 10) + 15),
+                z = Math.floor((Math.random() * 20) + 15);
               // light = Math.floor((Math.random() * 10) + 15),
               // soil1 = Math.floor((Math.random() * 20) + 15),
               // soil2 = Math.floor((Math.random() * 10) + 15),
@@ -406,7 +411,7 @@ export class HomePage {
           }
           return data;
         }())
-      },{
+      }, {
         name: 'Humidity',
         type: undefined,
         data: (function () {

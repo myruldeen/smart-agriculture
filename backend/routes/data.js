@@ -1,3 +1,4 @@
+var moment = require('moment');
 const Json2csvParser = require("json2csv").Parser;
 const fs = require("fs");
 const express = require('express');
@@ -18,6 +19,71 @@ function dataWithTime(arr) {
         }
     })
 }
+router.get('/daily', function (req, res) {
+    var start = moment().subtract(24, 'hours').toDate();
+    Data
+        .find({ "createdAt": { "$gte": start } })
+        .exec(function(err, data) {
+            if (err) return res.status(500).send(err);
+            
+            const dArr = [];
+            data.forEach(element => {
+                dArr.push(element.data)
+            });
+           
+            res.json({data: dArr,  date: start});
+        });
+});
+
+router.get('/weekly', function (req, res) {
+    var start = moment().subtract(24, 'hours').toDate();
+    Data
+        .find({ "createdAt": { "$gte": start } })
+        .exec(function(err, data) {
+            if (err) return res.status(500).send(err);
+            
+            const dArr = [];
+            data.forEach(element => {
+                dArr.push(element.data)
+            });
+           
+            res.json({data: dArr,  date: start});
+        });
+});
+
+router.get('/monthly', function (req, res) {
+    var start = moment().subtract(24, 'hours').toDate();
+    Data
+        .find({ "createdAt": { "$gte": start } })
+        .exec(function(err, data) {
+            if (err) return res.status(500).send(err);
+            
+            const dArr = [];
+            data.forEach(element => {
+                dArr.push(element.data)
+            });
+           
+            res.json({data: dArr,  date: start});
+        });
+});
+
+router.get('/yearly', function (req, res) {
+    var start = moment().subtract(24, 'hours').toDate();
+    Data
+        .find({ "createdAt": { "$gte": start } })
+        .exec(function(err, data) {
+            if (err) return res.status(500).send(err);
+            
+            const dArr = [];
+            data.forEach(element => {
+                dArr.push(element.data)
+            });
+           
+            res.json({data: dArr,  date: start});
+        });
+});
+
+//-----------------------------------------------------------
 
 router.get('/save', function (req, res) {
     let limit = parseInt(req.params.limit) || 100;
@@ -72,20 +138,6 @@ router.delete('/file/:id', (req, res, next) => {
     })
 })
 
-// router.get('/:deviceId/:limit', function (req, res) {
-//     var macAddress = req.params.deviceId;
-//     var limit = parseInt(req.params.limit) || 30;
-//     Data
-//         .find({
-//             macAddress: macAddress
-//         })
-//         .sort({ 'createdAt': -1 })
-//         .limit(limit)
-//         .exec(function (err, devices) {
-//             if (err) return res.status(500).send(err);
-//             res.status(200).json(devices);
-//         });
-// });
 router.get('/:limit', function (req, res) {
     var limit = parseInt(req.params.limit) || 30;
     Data
@@ -106,4 +158,36 @@ router.post('/', function (req, res) {
         res.json(_data);
     });
 })
+
+
+
+function exportCsv(callback) {
+    var limit = 100;
+    Data
+        .find({})
+        .sort({ 'createdAt': -1 })
+        .limit(limit)
+        .exec(function (err, data) {
+
+            if (err) return res.status(500).send(err);
+            const json2csvParser = new Json2csvParser({ header: true });
+
+            const dArr = [];
+            data.forEach(element => {
+                dArr.push(element.data)
+            });
+            const csvData = json2csvParser.parse(dArr);
+            const csvPath = path.join('excel_data', Date.now() + '.csv');
+
+            // console.log(dArr)
+            fs.writeFile(csvPath, csvData, function (error) {
+                // if (error) throw error;
+                if (error) {
+                    callback(error);
+                }
+                callback(null, "Write to csv successfully!");
+            });
+        });
+}
 module.exports = router;
+module.exports.exportCsv = exportCsv;

@@ -1,5 +1,5 @@
 'use-strict';
-
+var cron = require('node-cron');
 var Data = require('../model/data.model');
 var mqtt = require('mqtt');
 // var data = require('./data.model');
@@ -22,10 +22,10 @@ var options = {
 }
 
 var client = mqtt.connect('mqtt://driver.cloudmqtt.com', options);
-client.on('connect', function() {
+client.on('connect', function () {
     console.log('connected to broker');
-    client.subscribe('esp/sada', function() {
-        client.on('message', function(topic, message, packet) {
+    client.subscribe('esp/sada', function () {
+        client.on('message', function (topic, message, packet) {
             // console.log(message.toString())
             if (topic === 'esp/sada') {
                 var data = message.toString();
@@ -37,12 +37,12 @@ client.on('connect', function() {
                 } catch (error) {
                     console.log(error.message);
                 }
-                
+
             } else {
                 console.log('Unknown topic', topic);
             }
         })
-        setInterval(async function() {
+        setInterval(async function () {
             try {
                 var result = await Data.create(dataSet);
                 // console.log(result.data);
@@ -50,7 +50,7 @@ client.on('connect', function() {
                 console.log(error.message);
             }
         }, 60000);
-    
+
     })
 
 });
@@ -62,6 +62,16 @@ client.on('close', () => {
 client.on('error', (err) => {
     console.log(err);
 });
+
+// cron.schedule('* * * * *', () => {
+//     // console.log('running a task every minute');
+//     var x = require('../routes/data');
+//     x.exportCsv(function(err, data) {
+//         if (err) throw err;
+//         console.log(data);
+//     })
+
+// });
 
 exports.register = function (_socket) {
     socket = _socket;

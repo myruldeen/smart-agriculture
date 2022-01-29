@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
   },
   "author": "",
   "license": "ISC",
@@ -12,9 +13,11 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "json2csv": "^5.0.6",
+    "moment": "^2.29.1",
     "mongoose": "^4.9.7",
     "morgan": "^1.10.0",
     "mqtt": "^4.3.2",
+    "node-cron": "^3.0.0",
     "socket.io": "^1.0.6"
   }
 }
