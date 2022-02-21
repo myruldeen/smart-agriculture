@@ -1,10 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { SocketService } from '../../services/socket.service';
 import { FileService } from '../../services/file.service';
 import { DataService } from '../../services/data.service';
 import { ToastService } from '../../services/toast.service';
 import * as HighCharts from 'highcharts';
+declare var cordova: any;
 
 @Component({
   selector: 'page-home',
@@ -22,7 +23,7 @@ export class HomePage {
 
   temp: any = 0;
   // Gauge Chart
-  public canvasWidth = 140
+  public canvasWidth = 130
   public soil1 = 0
   public soil2 = 0
   public soilTemp1 = 0
@@ -44,6 +45,16 @@ export class HomePage {
     hasNeedle: true,
     needleColor: 'gray',
     needleUpdateSpeed: 1000,
+    arcColors: ['rgb(255,84,84)', 'rgb(239,214,19)', 'rgb(61,204,91)'],
+    arcDelimiters: [40, 70],
+    rangeLabel: ['0', '100'],
+    needleStartValue: 50,
+  }
+  // Gauge 2
+  public options2 = {
+    hasNeedle: true,
+    needleColor: 'gray',
+    needleUpdateSpeed: 1000,
     arcColors: ['rgb(61,204,91)', 'rgb(239,214,19)', 'rgb(255,84,84)'],
     arcDelimiters: [40, 70],
     rangeLabel: ['0', '100'],
@@ -54,7 +65,7 @@ export class HomePage {
 
   // Line Chart
   public lineChartOptions: any = {
-     // animation duration after a resize
+    // animation duration after a resize
     responsive: true,
     animation: {
       duration: 0, // general animation time
@@ -100,32 +111,7 @@ export class HomePage {
   public lineChartData: Array<any> = [];
   public lineChartLabels: Array<any> = [];
 
-  public lineChartColors: Array<any> = [
-    // { // grey
-    //   backgroundColor: 'rgba(148,159,177,0.2)',
-    //   borderColor: 'rgba(148,159,177,1)',
-    //   pointBackgroundColor: 'rgba(148,159,177,1)',
-    //   pointBorderColor: '#fff',
-    //   pointHoverBackgroundColor: '#fff',
-    //   pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    // },
-    // { // dark grey
-    //   backgroundColor: 'rgba(77,83,96,0.2)',
-    //   borderColor: 'rgba(77,83,96,1)',
-    //   pointBackgroundColor: 'rgba(77,83,96,1)',
-    //   pointBorderColor: '#fff',
-    //   pointHoverBackgroundColor: '#fff',
-    //   pointHoverBorderColor: 'rgba(77,83,96,1)'
-    // },
-    // { // grey
-    //   backgroundColor: 'rgba(148,159,177,0.2)',
-    //   borderColor: 'rgba(148,159,177,1)',
-    //   pointBackgroundColor: 'rgba(148,159,177,1)',
-    //   pointBorderColor: '#fff',
-    //   pointHoverBackgroundColor: '#fff',
-    //   pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    // }
-  ];
+  public lineChartColors: Array<any> = [];
 
   // events
   public chartClicked(e: any): void {
@@ -151,12 +137,29 @@ export class HomePage {
     public socket: SocketService,
     public toastCtrl: ToastService,
     private fileService: FileService,
-    private dataService: DataService) {
+    private dataService: DataService,
+    private platform: Platform) {
+
+    // if (this.platform.is('cordova')) {
+    //   window.location.href = url;
+    // }else{
+    //       window.open(url,'_blank');
+    // }
 
   }
 
   ionViewDidEnter() {
     // this.plotDynamicSplineChart();
+
+    // if (this.platform.is('cordova')) {
+    //   cordova.plugins.notification.local.schedule({
+    //     title: 'My first ntification',
+    //     text: 'Thats pretty easy...',
+    //     foreground: true
+    //   });
+    // } else {
+    //   console.log('in browser');
+    // }
   }
 
   ionViewDidLoad() {
@@ -198,8 +201,40 @@ export class HomePage {
       this.bottomTemp = data.data.Temp.toFixed(2) + ' C';
       this.bottomHumd = data.data.Humd + ' %';
 
-      (this.soil1 > 0) ? this.relayA = "ON" : this.relayA = "OFF";
-      (this.soil2 > 0) ? this.relayB = "ON" : this.relayB = "OFF";
+      (this.soil1 < 20) ? this.relayA = "ON" : this.relayA = "OFF";
+      (this.soil2 < 20) ? this.relayB = "ON" : this.relayB = "OFF";
+
+      if (this.soil1 < 20) {
+        if (this.platform.is('cordova')) {
+
+          cordova.plugins.notification.local.schedule({
+            title: 'Soil Status',
+            text: 'Please water your plant 1!',
+            foreground: true
+          });
+
+        } else {
+          // console.log('in browser');
+        }
+        console.log('plant bendi need water');
+      }
+
+      if (this.soil2 < 20) {
+        if (this.platform.is('cordova')) {
+
+          cordova.plugins.notification.local.schedule({
+            title: 'Soil Status',
+            text: 'Please water your plant 2!',
+            foreground: true
+          });
+
+        } else {
+          // console.log('in browser');
+        }
+        console.log('plant chilli need water');
+      } else {
+
+      }
       // this.lineChartData.push(data);
       // console.log(data);
 
@@ -346,18 +381,6 @@ export class HomePage {
               var x = (new Date()).getTime(), // current time
                 y = Math.floor((Math.random() * 10) + 15),
                 z = Math.floor((Math.random() * 20) + 15);
-              // light = Math.floor((Math.random() * 10) + 15),
-              // soil1 = Math.floor((Math.random() * 20) + 15),
-              // soil2 = Math.floor((Math.random() * 10) + 15),
-              // soilTemp1 = Math.floor((Math.random() * 20) + 15),
-              // soilTemp2 = Math.floor((Math.random() * 20) + 15);
-              series1.addPoint([x, y], true, true);
-              series2.addPoint([x, z], true, true);
-              // series1.addPoint([x, temp], true, true);
-              // series2.addPoint([x, humd], true, true);
-              // series1.addPoint([x, temp], true, true);
-              // series2.addPoint([x, humd], true, true);
-              // series1.addPoint([x, temp], true, true);
             }, 1000);
           }
         }

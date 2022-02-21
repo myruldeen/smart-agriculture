@@ -24,12 +24,14 @@ import { FileService } from '../services/file.service';
 import { GaugeChartModule } from 'angular-gauge-chart';
 import { ChartsModule } from 'ng2-charts';
 import { ToastService } from '../services/toast.service';
+import { PopoverComponent } from '../components/popover/popover';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ListPage
+    ListPage,
+    PopoverComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +44,8 @@ import { ToastService } from '../services/toast.service';
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage
+    ListPage,
+    PopoverComponent
   ],
   providers: [
     StatusBar,
