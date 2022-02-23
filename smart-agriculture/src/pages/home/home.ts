@@ -303,7 +303,7 @@ export class HomePage {
         data: temp,
         label: 'Temperature',
         fill: false,
-        borderColor: 'rgb(255,0,255)',
+        borderColor: 'rgb(255,1,255)',
         tension: 0.1
       },
       {

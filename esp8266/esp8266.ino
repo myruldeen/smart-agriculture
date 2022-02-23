@@ -15,7 +15,8 @@ const char* mqtt_pass = "hc_7fOQmGQaE";
 #define ONE_WIRE_BUS 2
 
 #define DHTTYPE DHT11   // DHT 11
-#define dht_dpin D6      //GPIO-0 D3 pin of nodemcu
+#define dht_dpin D6     //GPIO-0 D3 pin of nodemcu
+#define buzzer 9        //buzzer to esp8266 gpio pin 9
 //SoftwareSerial nodemcu(3, 1);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
@@ -99,6 +100,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(ON_OFF, OUTPUT);
   pinMode(SW, OUTPUT);
+  pinMode(buzzer, OUTPUT);
   dht.begin();
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
@@ -161,6 +163,7 @@ void loop() {
   else
   {
     digitalWrite(SW, HIGH);
+    tone(buzzer, 1000);
   }
 
   delay(10);
@@ -171,6 +174,7 @@ void loop() {
     // j=1;digitalWrite(ON_OFF, HIGH);
   } else {
     digitalWrite(ON_OFF, HIGH);
+    tone(buzzer, 1000);
     //   j=0;digitalWrite(ON_OFF, LOW);
   }
   
