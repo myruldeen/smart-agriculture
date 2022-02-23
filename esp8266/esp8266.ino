@@ -192,8 +192,8 @@ void loop() {
 
   root["macAddress"] = WiFi.macAddress();
   JsonObject& data = root.createNestedObject("data");
-  data["Soil1"] = sensorValue1;
-  data["Soil2"] = sensorValue2;
+  data["Soil1"] = map(m1, 0, 1023, 100, 0);
+  data["Soil2"] = map(m2, 0, 1023, 100, 0);
   data["Light"] = light;
   data["Temp"] = t;
   data["Humd"] = h;
